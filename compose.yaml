@@ -1,0 +1,56 @@
+services:
+  mongo:
+    image: mongo:6.0.20
+    container_name: mongo
+    ports:
+      - "27017:27017"
+
+  app-db:
+    image: task:db
+    build:
+      context: .
+      dockerfile: ./db/Dockerfile
+    container_name: task-db
+    volumes:
+      - ./db/config/config.example.toml:/app/bin/config/config.toml
+    working_dir: /app/bin
+    environment:
+      - GIN_MODE=release
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 128M
+    depends_on:
+      - mongo
+
+  app-api:
+    image: task:api
+    build:
+      context: .
+      dockerfile: ./api/Dockerfile
+    container_name: task-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./api/config/config.example.toml:/app/bin/config/config.toml
+    working_dir: /app/bin
+    environment:
+      - GIN_MODE=release
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 128M
+    depends_on:
+      - app-db
+
+  mongo-express:
+    image: mongo-express:1.0.2
+    container_name: mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongo
+    depends_on:
+      - mongo

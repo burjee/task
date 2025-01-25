@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+option go_package = "task/grpc";
+package grpc;
+
+service TaskManager {
+  rpc List (EmptyRequest) returns (ListReply) {}
+  rpc Add (AddRequest) returns (AddReply) {}
+  rpc Update (UpdateRequest) returns (UpdateReply) {}
+  rpc Delete (DeleteRequest) returns (DeleteReply) {}
+}
+
+message EmptyRequest {}
+
+enum Status {
+  PENDING = 0;
+  IN_PROGRESS = 1;
+  COMPLETED = 2;
+}
+
+message Task {
+  string id = 1;
+  string title = 2;
+  Status status = 3;
+  string created_at = 4;
+  string updated_at = 5;
+}
+
+message ListReply {
+  repeated Task tasks = 1;
+}
+
+message AddRequest {
+  string title = 1;
+}
+
+message AddReply {
+  bool ok = 1;
+}
+
+message UpdateRequest {
+  string id = 1;
+  Status status = 2;
+}
+
+message UpdateReply {
+  bool ok = 1;
+}
+
+message DeleteRequest {
+  string id = 1;
+}
+
+message DeleteReply {
+  bool ok = 1;
+}
