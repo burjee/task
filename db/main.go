@@ -13,10 +13,11 @@ import (
 
 func main() {
 	db, close := database.New()
+	coll := db.Database("task").Collection("tasks")
 	defer close()
 
 	grpc_server := grpc.NewServer()
-	task_server := server.New(db)
+	task_server := server.New(coll)
 	pb.RegisterTaskManagerServer(grpc_server, task_server)
 
 	listen, err := net.Listen("tcp", ":50051")
