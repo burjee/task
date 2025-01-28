@@ -47,3 +47,19 @@ docker compose up -d --build
 ```bash
 docker compose down
 ```
+
+## 測試
+
+測試 api
+
+```bash
+cd api
+go test -v task/api/routes
+```
+
+測試 db
+
+```bash
+cd db
+go test -v task/db/server
+```
